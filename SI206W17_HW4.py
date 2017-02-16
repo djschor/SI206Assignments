@@ -1,5 +1,6 @@
 import unittest
 import requests
+print("hello")
 import codecs
 from bs4 import BeautifulSoup
 
@@ -15,10 +16,11 @@ from bs4 import BeautifulSoup
 
 ## Write the Python code to do so here.
 
-import requests
 w = requests.get("http://www.nytimes.com").text 
-f = open('nytimes_data.html', 'w')
-f.write(nytimes_data.html)
+print(type(w))
+#print(w)
+f = codecs.open('nytimes_data.html', 'w', encoding="utf-8")
+f.write(w.encode('utf-8'))
 f.close()
 
 
