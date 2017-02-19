@@ -63,8 +63,8 @@ def get_tweets_from_user(username):
 
 	tweet_list = []
 	for x in tweet_list: 
-		tweet_list.append("Text: " + tweet['text'])
-		tweet_list.append("Created AT: " + tweet['created_at'])
+		tweet_list.append("Text: " + x['text'])
+		tweet_list.append("Created AT: " + x['created_at'])
 		tweet_list.append("\n")
 	return(tweet_list[:9])
 
@@ -72,7 +72,7 @@ def get_tweets_from_user(username):
 
 user_tweet = input("Watcha Tryna Search")
 tweet_user = get_tweets_from_user(user_tweet)
-for tweet in user_tweet:
+for tweet in tweet_user:
 	print(tweet)
 
 ## TEXT: Go blue!
