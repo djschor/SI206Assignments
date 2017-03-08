@@ -58,8 +58,10 @@ def get_tweets_from_user(username):
 		CACHE_DICTION[unique_identifier] = twitter_results # add it to the dictionary -- new key-val pair
 		# and then write the whole cache dictionary, now with new info added, to the file, so it'll be there even after your program closes!
 		f = open(CACHE_FNAME,'w') # open the cache file for writing
-		f.write(json.dumps(CACHE_DICTION)) # make the whole dictionary holding data and unique identifiers into a json-formatted string, and write that wholllle string to a file so you'll have it next time!
-		f.close()
+		x = f.write(json.dumps(CACHE_DICTION)) # make the whole dictionary holding data and unique identifiers into a json-formatted string, and write that wholllle string to a file so you'll have it next time!
+		print(type(
+		x.close()
+
 
 	tweet_list = []
 	for x in tweet_list: 

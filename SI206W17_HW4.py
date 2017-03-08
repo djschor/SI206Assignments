@@ -20,7 +20,7 @@ w = requests.get("http://www.nytimes.com").text
 print(type(w))
 #print(w)
 f = codecs.open('nytimes_data.html', 'w', encoding="utf-8")
-f.write(w.encode('utf-8'))
+#f.write(w.encode('utf-8'))
 f.close()
 
 
@@ -71,10 +71,17 @@ f.close()
 ## Write code to complete this task here. We've gotten you started... note that it'll be difficult to continue if you don't understand what the provided code does!
 
 response = requests.get("https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastname_value=&rid=All")
+print(type(response))
 htmldoc = response.text
+print(type(htmldoc))
+
 
 soup = BeautifulSoup(htmldoc,"html.parser")
+print(type(soup))
+
 people = soup.find_all("div",{"class":"views-row"})
+print(type(people))
+
 umsi_titles = {}
 
 ## It may be helpful to translate the following from English to code:
