@@ -1,7 +1,7 @@
 ## To fill these in:
 ## 1. Create a twitter account, or log in to your own
 ## 2. apps.twitter.com
-## 3. Click "Create New App"
+## 3. Click "Create New App"git
 ## 4. You'll see Create An Application. Fill in a name (must be unique) and a brief description (anything OK), and ANY complete website, e.g. http://programsinformationpeople.org in the website field. And click the box assuring you've read the developer agreement once you read it! (Though in this course we will not be learning concepts that can violate the TOS...)
 ## 5. Click "Create your Twitter application"
 ## 6. Click on the Keys and Access Tokens tab on the next screen

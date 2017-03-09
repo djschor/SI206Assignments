@@ -46,7 +46,7 @@ except:
 	CACHE_DICTION = {}
 
 def get_tweets_from_user(username): 
-	unique_identifier = "twitter_{}".format(username) # seestring formatting chapter
+	unique_identifier = "twitter_{}".format(username) # see string formatting chapter
 	if unique_identifier in CACHE_DICTION: # if it is...
 		print('using cached data for', username)
 		twitter_results = CACHE_DICTION[unique_identifier] # grab the data from the cache!
@@ -56,7 +56,7 @@ def get_tweets_from_user(username):
 		# but also, save in the dictionary to cache it!
 		desired_tweets = twitter_results['statuses']			
 		CACHE_DICTION[unique_identifier] = twitter_results # add it to the dictionary -- new key-val pair
-		# and then write the whole cache dictionary, now with new info added, to the file, so it'll be there even after your program closes!
+		# and then write the whole cache dictionary, now with new info added, to the file, so it'll be there even after your program closes
 		f = open(CACHE_FNAME,'w') # open the cache file for writing
 		x = f.write(json.dumps(CACHE_DICTION)) # make the whole dictionary holding data and unique identifiers into a json-formatted string, and write that wholllle string to a file so you'll have it next time!
 		print(type(
@@ -72,10 +72,10 @@ def get_tweets_from_user(username):
 
 
 
-user_tweet = input("Watcha Tryna Search")
-tweet_user = get_tweets_from_user(user_tweet)
-for tweet in tweet_user:
-	print(tweet)
+	user_tweet = input("Watcha Tryna Search")
+	tweet_user = get_tweets_from_user(user_tweet)
+	for tweet in tweet_user:
+		print(tweet)
 
 ## TEXT: Go blue!
 
