@@ -1,8 +1,8 @@
 ## SI 206 W17 - Project 2 
 
 ## COMMENT HERE WITH:
-## Your name:
-## Anyone you worked with on this project:
+## Your name: Daniel Schorin  
+## Anyone you worked with on this project: Tahmeed Tureem
 
 ## Below we have provided import statements, comments to separate out the parts of the project, instructions/hints/examples, and at the end, tests. See the PDF of instructions for more detail. 
 ## You can check out the SAMPLE206project2_caching.json for an example of what your cache file might look like.
@@ -38,6 +38,7 @@ CACHE_FNAME = "206project2_caching.json"
 try:
 	cache_file = open(CACHE_FNAME,'r')
 	cache_contents = cache_file.read()
+	print("type of cache contents", type(cache_contents))
 	CACHE_DICTION = json.loads(cache_contents)
 except:
 	CACHE_DICTION = {}
@@ -54,9 +55,10 @@ except:
 
 def find_urls(string): 
 	numlist = []
-	matches = re.findall('^https?:\/\/(www.)?\w{2,}(?:\.+\w{2,})+', string) #remember second input of regex needs to match function input
+	matches = re.findall('https?:\/\/*[a-z]*[a-z0-9]+\.[a-z]+\.*[a-z]*', string) #remember second input of regex needs to match function input
 	return matches 
 
+#re.findall('^https?:\/\/(www.)?\w{2,}(?:\.+\w{2,})+', string)
 
 ## PART 2 (a) - Define a function called get_umsi_data.
 ## INPUT: N/A. No input.
@@ -70,52 +72,51 @@ def find_urls(string):
 
 
 def get_umsi_data(): 
-	try:
-		cache_file = open(CACHE_FNAME,'r')
-		cache_contents = cache_file.read()
-		return cache_contents
-	except: 
-		all_pages_list = ['https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastna me_value=&rid=All', 
-		'https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastna me_value=&rid=All&page=1', 
-		'https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastna me_value=&rid=All&page=2',
-		'https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastna me_value=&rid=All&page=3',
-		'https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastna me_value=&rid=All&page=4',
-		'https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastna me_value=&rid=All&page=5',
-		'https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastna me_value=&rid=All&page=6',
-		'https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastna me_value=&rid=All&page=7',
-		'https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastna me_value=&rid=All&page=8',
-		'https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastna me_value=&rid=All&page=9',
-		'https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastna me_value=&rid=All&page=10',
-		'https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastna me_value=&rid=All&page=11']
 
+	if 'umsi_directory_data' in CACHE_DICTION:
+		#global all_page_html
+		#all_page_html = CACHE_DICTION['umsi_directory_data']
+		return CACHE_DICTION['umsi_directory_data']
+	else:
+		all_pages_list = [] 
+		for x in range(12):
+			y = 'https://www.si.umich.edu/directory?field_person_firstname_value=&field_person_lastna me_value=&rid=All&page=' + str(x)
+			print("printing y", y)
+			str(y)
+			all_pages_list.append(y)
+
+		global all_page_html
 		all_page_html = []
 
 		for page in all_pages_list: 
 			r = requests.get(page, headers={'User-Agent': 'SI_CLASS'})
 			umsi_text = r.text #receiving text attribute
+			str(umsi_text)
 			all_page_html.append(umsi_text)
+#create json object (dictionary)
 
+		CACHE_DICTION['umsi_directory_data'] = all_page_html
 		f = open(CACHE_FNAME, 'w') #opening the file to write to 
-		f.write(all_page_html) #write the text object to the opened file
-		f.close()
+		print(type(f), "type f")
+		f.write(json.dumps(CACHE_DICTION)) #write the text object to the opened file
+		print(type(f), "type f2")
+		f.close()  
 
-		return all_page_html
+		return CACHE_DICTION['umsi_directory_data']
 
 
 ## PART 2 (b) - Create a dictionary saved in a variable umsi_titles 
 ## whose keys are UMSI people's names, and whose associated values are those people's titles, e.g. "PhD student" or "Associate Professor of Information"...
-
-	umsi_titles = {}
-	soup = BeautifulSoup(all_page_html,"html.parser")
+umsi_titles = {}
+for html in get_umsi_data(): 
+	soup = BeautifulSoup(html,"html.parser")
 	people = soup.find_all("div",{"class":"views-row"})
-	for names in people: 
-		div = soup.find_all("div",{'class':"field-items-even"})
-		for hats in div: 
-			item = turtles.find("div",{"property":"dc:title"})
-			item2 = item.find_next_sibling("div")
-			umsi_titles[hats] = {item:item2}
-	print(umsi_titles)
 
+	for i in people:
+		names = i.find("div", {"property":"dc:title"}) #"property" is unique
+		titles = i.find("div", {"class":"field-name-field-person-titles"}) 
+	
+		umsi_titles[names.text] = titles.text
 
 
 
@@ -125,50 +126,63 @@ def get_umsi_data():
 ## RETURN VALUE: A list of strings: A list of just the text of 5 different tweets that result from the search.
 
 def get_five_tweets(string): 
-	public_tweets = api.home_timeline()
-	unique_identifier = CACHE_DICTION('twitter_University of Michigan') #?? is this the unique identifier
-		#wtf is the unique identifier this can't be it bc its a dict
-	if unique_identifier in CACHE_DICTION: # if it is...
-		twitter_results = CACHE_DICTION[unique_identifier] #? do i need to iterate through the other dictionary to get the identifier?
+	if 'twitter_University of Michigan' in CACHE_DICTION:
+		tweet_list = []
+		twitter_results = CACHE_DICTION['twitter_University of Michigan']
+		print("tweets", tweet_list[:5])
+		print("type of tweets", type(tweet_list))
+		for x in twitter_results['statuses']: 
+			tweet_list.append(x['text'])
+		return(tweet_list[:5])
 
 	else:
-		twitter_results = api.search(string) # get it from the internet
+		twitter_results = api.search(string) # get it from the internetq=string, count=5
 		# but also, save in the dictionary to cache it!
-		CACHE_DICTION[unique_identifier] = twitter_results # add it to the dictionary -- new key-val pair
+		CACHE_DICTION['twitter_University of Michigan'] = twitter_results # add it to the dictionary -- new key-val pair
 		# and then write the whole cache dictionary, now with new info added, to the file, so it'll be there even after your program closes!
 		f = open(CACHE_FNAME,'w') # open the cache file for writing
-		x = f.write(json.dumps(CACHE_DICTION)) # make the whole dictionary holding data and unique identifiers into a json-formatted string, and write that wholllle string to a file so you'll have it next time!
-		x.close()
+		f.write(json.dumps(CACHE_DICTION)) # make the whole dictionary holding data and unique identifiers into a json-formatted string, and write that wholllle string to a file so you'll have it next time!
+		f.close()
 
-	string_return = []
-	for x in string_return: 
-		tweet_list.append(x['text'])
+		tweet_list = []
+		for x in twitter_results['statuses']: 
+			tweet_list.append(x['text'])
+			print("type of x in part 3a", type(x))
+		url_list = tuple(tweet_list)
+		
+		print("printing urls: ", url_list[:5])
+		print("printing len of tweet list", len(tweet_list))
 		return(tweet_list[:5])
 
 
 
+	#CACHE_DICTION['twitter_University of Michigan'] = string_return
 
-
-
-
-
-
-
-
+print("printing get 5 tweets", get_five_tweets("Michigan"))
+print("printing get 5 tweets TYPE", type(get_five_tweets("Michigan")))
 
 ## PART 3 (b) - Write one line of code to invoke the get_five_tweets function with the phrase "University of Michigan" and save the result in a variable five_tweets.
 five_tweets = get_five_tweets("University of Michigan")
+print("type of five tweets", type(five_tweets))
 
 ## PART 3 (c) - Iterate over the five_tweets list, invoke the find_urls function that you defined in Part 1 on each element of the list, and accumulate a new list of each of the total URLs in all five of those tweets in a variable called tweet_urls_found. 
+global tweet_urls_found
+tweet_urls_found= []
 for tweets in five_tweets: 
-	num_urls = []
 	x = find_urls(tweets)
-	if x: 
-		x.append(num_urls)
-		
+	if x:
+		x.append(tweet_urls_found)
+print("printing tweet urls found: ", tweet_urls_found)
+#print("printing prelim tweets found", tweet_urls_prelim)
+print("printing umsi title keys: ", umsi_titles.keys())
 
-
-
+"""
+for tweets in five_tweets: 
+	for urls in find_urls(tweets):
+		x = find_urls(urls)
+		x.append(tweet_urls_prelim)
+tweet_urls_found = tuple(tweet_urls_prelim)
+"""
 
 
 
