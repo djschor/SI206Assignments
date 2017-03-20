@@ -101,14 +101,20 @@ student_tups_list = list(student_tups)
 
 
 ## [PROBLEM 5]
+
 print("\n\n***** Problem 5 *****")
 # Use a list comprehension to create a list of Student instances out of the student_tups list you just created in Problem 2, and save that list in a variable called programmers. You should make sure you pass these tests before continuing, as you'll need this list for problems later on!
+programmers = [Student(student, seniority, programs_written) for student, seniority, programs_written in student_tups_list]
+print(type(programmers))
+
+"""
 mylist = []
 for x in student_tups_list:
     y = Student(x)
     mylist.append(y)
 programmers = mylist
-
+print(type(programmers))
+"""
 
 
 ## [PROBLEM 6]
@@ -116,8 +122,19 @@ print("\n\n***** Problem 6 *****")
 
 # A Student's programming_productivity is defined as that student's number of programs written divided by the years they have been at UMich.
 
-# Use the Python map function on the programmers list you just created, in order to create an map instance iterator of numbers representing the productivity of each student. Save the map iterator in a variable called prod_iter.
-prod_iter = map(self.years_um / self.num_programs)
+# Use the Python map function on the programmers list you just created, in order to create an map instance iterator of numbers representing the productivity of each student. Save the map iterator in a variable called prod_iter.ff
+
+def productivity(programmers):
+    print(type(programmers))
+    list_productivity = []
+    for x in programmers: 
+        productivity_student = x.num_programs / x.years_um
+        list_productivity.append(productivity_student)
+    return list_productivity
+
+prod_iter = map(productivity, programmers)
+prod_list = list(prod_iter)
+
 ## Write code to cast that iterator to a list. Save that list in the variable prod_list.
 
 ## You may add a method to the Student class if you wish in order to do this, but you do not need to. (If you do, make sure you do not create any syntax errors that keep code/tests from running!)
@@ -146,7 +163,7 @@ print("\n\n***** Problem 9 *****")
 
 ## Note that you can use another list you have already created for this problem.
 
-
+names_with_not_too_much_seniority = [x.name for x in programmers if len(x.name)> (x.num_programs/x.years_UM)]
 
 
 ## [PROBLEM 10]
@@ -165,13 +182,18 @@ print("\n\n***** Problem 10 *****")
 ## We have provided files samplehw6_1.txt and samplehw6_2.txt for your use for this problem, which hopefully you have downloaded, so you can test with those file names! The test below also relies upon these files. Of course, you could also create other files for testing.
 
 # Define readfiles (make sure to close the file reference in the right place)
-
-
-# Define len_check
-
-
+def readfiles(list_of_names):
+    for x in list_of_names:
+        data = open(x, 'r')
+        for q in data:
+            yield q
+        file.close()    
+ # Define len_check
+def length(lines):
+    yield(line for line in lines if len(line.split()) > 40)
 # Define main_filterer
-
+def main_filterer(list_of_names):
+    return list(length(readfiles(list_of_names)))
 
 
 ## Uncomment this code to test so you can see easily what results from your code. DO uncomment it. DO NOT delete or change it. (You can add other code above while you work, of course.)
